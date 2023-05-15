@@ -9,7 +9,7 @@ format:
 
 .PHONY: lint-pythoni
 lint-python:
-	ruff agg_utils
+	ruff code_utils
 	$(isort) --check-only --df
 	$(black) --check --diff
 
@@ -19,7 +19,7 @@ lint: lint-python
 
 .PHONY: mypy
 mypy:
-	mypy agg_utils
+	mypy code_utils
 
 
 .PHONY: all
