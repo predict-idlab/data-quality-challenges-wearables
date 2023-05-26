@@ -9,7 +9,7 @@ format:
 
 .PHONY: lint-pythoni
 lint-python:
-	ruff code_utils
+	ruff code_utils --ignore=E501
 	$(isort) --check-only --df
 	$(black) --check --diff
 
