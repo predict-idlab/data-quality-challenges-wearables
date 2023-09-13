@@ -164,3 +164,5 @@ plotly_figures/*.parquet
 
 # notebooks which do not need to be synced
 PREPROCESS_RAW_METADATA.ipynb
+
+*.zip
