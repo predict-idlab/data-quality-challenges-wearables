@@ -1,5 +1,5 @@
 <div align="center">
-<h1>:mag: Data quality challenges in wearable monitoring studies
+<h1>:mag: Data Quality Challenges in<br> Wearable Monitoring Studies
 </div>
 
 Codebase & further details for the paper:
