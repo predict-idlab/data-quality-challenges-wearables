@@ -1,6 +1,6 @@
+from inspect import getsourcefile
 from pathlib import Path
 from socket import gethostname
-from inspect import getsourcefile
 
 if gethostname() == "gecko":
     # -------------- ETRI PATHS --------------

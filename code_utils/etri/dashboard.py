@@ -3,9 +3,9 @@
 
 import sys
 from datetime import datetime
+from inspect import getsourcefile
 from pathlib import Path
 from typing import List, Tuple
-from inspect import getsourcefile
 
 import dash
 import dash_bootstrap_components as dbc
@@ -26,7 +26,7 @@ from plotly_resampler.aggregation import MinMaxLTTB
 sys.path.append(str(Path(getsourcefile(lambda: 0)).parent.parent.parent.absolute()))
 from code_utils.etri.visualization import add_etri_timeline_to_fig  # noqa: E402
 from code_utils.path_conf import processed_etri_path  # noqa: E402
-from code_utils.utils.dash_utils import serve_layout, get_selector_states, _create_subfolder_dict
+from code_utils.utils.dash_utils import serve_layout, get_selector_states, _create_subfolder_dict # noqa: E402
 # isort: on
 # fmt: on
 
@@ -56,20 +56,21 @@ def plot_multi_sensors(
 ) -> FigureResampler:
     selected_items = [i.strip() for i in selected_items]
 
-    # create the figures
+    # create the figure
     prev_rows: List[str] = []
+
+    # Add additional rows to the figure based on the selecton boxes
     if "show timeline" in selected_items:
         prev_rows += ["timeline"]
 
-    print(fold_usr_subf_start_end_sens_lst)
     sensors_names = [
         " ".join([Path(f).name, sensor])
         for f, _, _, _, _, sensors in fold_usr_subf_start_end_sens_lst
         for sensor in (sensors if isinstance(sensors, list) else [])
     ]
-
     total_rows: int = len(prev_rows) + len(sensors_names)
     kwargs = {"vertical_spacing": 0.15 / total_rows} if total_rows >= 2 else {}
+
     fig = FigureResampler(
         make_subplots(
             **dict(rows=total_rows, cols=1, shared_xaxes=True, **kwargs),
@@ -92,8 +93,6 @@ def plot_multi_sensors(
         for sensor in sensors:
             folder_subfolder_dict = _create_subfolder_dict(subf)
             sensor_path = Path(fold) / usr / folder_subfolder_dict.get(fold, "")
-            print("sensor_path", sensor_path)
-            # print("subfolders", subfolders)
 
             df_list = []
             for dates in pd.date_range(
@@ -112,9 +111,7 @@ def plot_multi_sensors(
                 df_list.append(df_sensor)
             df_sensor = pd.concat(df_list)
 
-            for col in sorted(
-                set(df_sensor.columns.values).difference(["index", "timestamp"])
-            ):
+            for col in sorted(set(df_sensor.columns.values).difference(["index", "timestamp"])):
                 print(f"{col}" + f" {len(df_sensor[col]):,} " + "-" * 30)
                 print(col, df_sensor[col].dtype)
                 fig.add_trace(
@@ -159,7 +156,6 @@ def update_graph(relayoutdata: dict, fr: FigureResampler):
 )
 def plot_or_update_graph(_, selected_items, start_date, end_date, *folder_list):
     selected_items = [] if selected_items is None else selected_items
-
     it = iter(folder_list)
     folder_user_day_sensor_list = []
     for folder, user, subfolder, sensors in zip(it, it, it, it):
@@ -169,11 +165,7 @@ def plot_or_update_graph(_, selected_items, start_date, end_date, *folder_list):
             folder_user_day_sensor_list.append((folder, user, subfolder, start_date, end_date, sensors))
 
     ctx = dash.callback_context
-    if (
-        len(ctx.triggered)
-        and "plot-button" in ctx.triggered[0]["prop_id"]
-        and len(folder_user_day_sensor_list)
-    ):
+    if (len(ctx.triggered) and "plot-button" in ctx.triggered[0]["prop_id"] and len(folder_user_day_sensor_list)):
         fig = plot_multi_sensors(
             selected_items=selected_items,
             fold_usr_subf_start_end_sens_lst=folder_user_day_sensor_list,
