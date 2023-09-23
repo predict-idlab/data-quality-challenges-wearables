@@ -506,7 +506,9 @@ scr_processing_pipeline = SeriesPipeline(
 
 
 # ------------------------- PIPELINES WRAPPERS
-def process_gsr_pipeline(df_scl: pd.Series, use_scr_pipeline=True, n_jobs=1) -> pd.DataFrame:
+def process_gsr_pipeline(
+    df_scl: pd.Series, use_scr_pipeline=True, n_jobs=1
+) -> pd.DataFrame:
     if use_scr_pipeline:
         tot_pipeline = SeriesPipeline(
             [gsr_processing_pipeline, scr_processing_pipeline]
