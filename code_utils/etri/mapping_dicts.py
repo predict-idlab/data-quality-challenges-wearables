@@ -53,7 +53,7 @@ action_option_mapping = {
     742: "Watching movie",
     743: "Concerts and plays",
     744: "Art galleries and museums",  # NOTE: key repeated
-    744: "Amusement Park, zoo",  # NOTE: key repeated
+    # 744: "Amusement Park, zoo",  # NOTE: key repeated
     745: "Festival, carnival",
     746: "Driving, sightseeing, excursion",
     751: "Walking",
@@ -62,7 +62,7 @@ action_option_mapping = {
     754: "Biking",
     755: "Ball games (soccer, basketball, baseball, tennis, etc)",
     756: "Personal exercises (yoga, pilates, etc.)",  # NOTE: key repeated
-    756: "Camping, fishing",  # NOTE: key repeated
+    # 756: "Camping, fishing",  # NOTE: key repeated
     761: "Group games (board games, card games, puzzles, etc.)",
     762: "Personal hobbies (woodworking, gardening, etc.)",
     763: "Group performances (orchestra, choir, troupe, etc.)",
