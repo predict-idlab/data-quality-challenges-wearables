@@ -16,7 +16,7 @@ Codebase & further details for the paper:
 │   ├── mbrain       <- mBrain specific code
 │   └── utils        <- utility code (dashboard, dataframes, interaction analysis)
 ├── loc_data         <- local data folder in which intermediate data is stored
-└── notebooks        <- Etri and mBRAIn specific notebooks 
+└── notebooks        <- Etri and mBrain specific notebooks 
     ├── etri
     └── mBrain
 ```
@@ -56,19 +56,27 @@ The dashboard can be run via the following command (after activating the poetry 
 ```bash
 python code_utils/etri/dashboard.py
 ```
+The output should show the following:
+> *Dash is running on http://0.0.0.0:\<PORT\>*
+
+
 In the dashboard screenshot below, both the wearable data and the application event labels are visualized. One can immediately observe that this participant tends to be more alone during evenings (light blue shaded area of the lower row in the upper subplot). During the weekends (indicated via a gray shaded area), this participant tends to be alone and spend a lot of time at home.
 
 ![](figures/ETRI_dashboard.png)
-
 
 ### mBrain
 The dashboard can be run via the following command (after activating the poetry shell)
 ```bash
 python code_utils/mBrain/dashboard.py
 ```
+The output whill show the following:
+> *Dash is running on http://0.0.0.0:\<PORT\>*
+
+Below, we provide a screenshot of the mBrain dashboard. As can be observed from the selection box on the left side, the dashboard shows the headache timeline of the participant, along with the Empatica E4 its accelerometer signal and the smartphone light data. When hovering over a headache event, as shown in the upper plot, one can see the associated characteristics of the headache event.
+
+![](figures/MBRAIN_dashboard.png)
 
 ### Cite
-
 ```bibtex
 @article{TODO,
   title={TODO},
