@@ -1,5 +1,4 @@
-"""Code to generate time-series visualization dashboard for the etri data. """
-
+"""Code to generate time-series visualization dashboard for the ETRI data."""
 
 import sys
 from datetime import datetime
@@ -30,21 +29,31 @@ from code_utils.utils.dash_utils import serve_layout, get_selector_states, _crea
 # isort: on
 # fmt: on
 
+# read the label file, which stems from the parsed ETRI notebook
+df_labels = pd.read_parquet(processed_etri_path / "labels.parquet")
+
+# create the Dash app
 app = DashProxy(
     __name__,
     external_stylesheets=[dbc.themes.LUX],
     transforms=[ServersideOutputTransform()],
 )
 
-df_labels = pd.read_parquet(processed_etri_path / "labels.parquet")
 
 # each list is a type
 name_folders_list = [
-    {
-        "etri": {"user_folder": processed_etri_path},
-    },
+    {"etri": {"user_folder": processed_etri_path}},
     # { "etri": {"user_folder": processed_etri_path}, },
 ]
+
+# Construct the layout
+app.layout = serve_layout(
+    app,
+    title="plotly-resampler ETRI dashboard",
+    checklist_options=["show timeline"],
+    name_folders_list=name_folders_list,
+)
+selector_states = get_selector_states(name_folders_list)
 
 # fmt: off
 # --------------------------------- Visualization ---------------------------------
@@ -125,23 +134,7 @@ def plot_multi_sensors(
     return fig
 
 
-app.layout = serve_layout(app, ["show timeline"], name_folders_list=name_folders_list)
-selector_states = get_selector_states(name_folders_list)
-
-
 # --------------------------------- Callbacks ---------------------------------
-# --------- dynamic resampling ----------
-@app.callback(
-    Output("trace-updater", "updateData"),
-    Input("resampled-graph", "relayoutData"),
-    State("store", "data"),
-)
-def update_graph(relayoutdata: dict, fr: FigureResampler):
-    if fr is None or relayoutdata is None:
-        raise dash.exceptions.PreventUpdate()
-    return fr.construct_update_data(relayoutdata)
-
-
 # -------- plot or update graph ---------
 @app.callback(
     Output("resampled-graph", "figure"),
