@@ -28,6 +28,8 @@ all: lint mypy test
 .PHONY: clean
 clean:
 	rm -rf `find . -name __pycache__`
+	rm -rf `find . -name file_system_store`
+	rm -rf `find . -name .ipynb_checkpoints`
 	rm -f `find . -type f -name '*.py[co]' `
 	rm -f `find . -type f -name '*~' `
 	rm -f `find . -type f -name '.*~' `
