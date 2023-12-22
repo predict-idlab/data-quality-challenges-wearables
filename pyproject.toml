@@ -33,6 +33,6 @@ black = "^22.6.0"
 ipywidgets = "^7.7.1"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.0.198"
+ruff = "^0.1.7"
 isort = "^5.12.0"
 
