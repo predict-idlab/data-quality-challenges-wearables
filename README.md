@@ -17,7 +17,7 @@ For each identified challenge, denoted as `C<ID>`, we have curated a dedicated n
 
 ## 📖 Table of contents
 - [📰 How is the repository structured?](#-how-is-the-repository-structured)
-  - [🛠️ Installation](#-installation)
+  - [🛠️ Installation](#installation_ref)
 - [🗃️ How to acquire the data](#️-how-to-acquire-the-data)
   - [ETRI lifelog 2020](#etri-lifelog-2020)
   - [mBrain21](#mbrain21)
@@ -27,7 +27,7 @@ For each identified challenge, denoted as `C<ID>`, we have curated a dedicated n
     - [ETRI](#etri)
     - [mBrain](#mbrain)
   - [⌚ off-wrist detection](#-off-wrist-detection)
-  - [✒️ Data annotation](#-data-annotation)
+  - [✒️ Data annotation](#data_annotation_ref)
 - [📖 Citation](#citation_ref)
 - [📝 License](#license_ref)
 
@@ -47,6 +47,7 @@ For each identified challenge, denoted as `C<ID>`, we have curated a dedicated n
 ```
 
 
+<a name="installation_ref">
 ### 🛠️ Installation
 
 This repository uses [poetry](https://python-poetry.org/) as dependency manager.
@@ -126,6 +127,7 @@ Moreover, the [C7_missing_data](notebooks/mBrain/C7_missing_data.ipynb) notebook
 Below, a screenshot of the off-wrist pipeline devised by [Böttcher et al. (2022)](https://www.nature.com/articles/s41598-022-25949-x) is shown.
 ![](figures/off_wrist_bottcher.png)
 
+<a name="data_annotation_ref">
 ## ✒️ Data annotation
 The [C5.1_label_off_wrist](notebooks/mBrain/C5.1_Label_off_wrist.ipynb) mBrain notebook demonstrates how large bouts of time-series data can be annotated using [plotly-resampler](https://github.com/predict-idlab/plotly-resampler).
 
