@@ -1,3 +1,10 @@
+"""This file contains the GSR processing pipeline for the Empatica E4 wristband.
+
+Specifically, two pipelines are defined:
+1. The GSR processing pipeline (which cleans the GSR signal)
+2. The SCR processing pipeline (which decomposes the GSR signal into phasic and tonic
+    components and finds the SCR peaks)
+"""
 from __future__ import annotations
 
 from typing import List
@@ -10,84 +17,21 @@ from tsflex.processing import SeriesPipeline, SeriesProcessor, dataframe_func
 from tsflex.processing.utils import process_chunks_multithreaded
 
 from code_utils.utils.dataframes import arr_to_repetitive_count
+from code_utils.empatica.generic_processing import (
+    sqi_and,
+    low_pass_filter,
+    sqi_smoothen,
+    nan_padded_low_pass_filter,
+    threshold_sqi,
+)
 
 # CONFIG
+FS = 4  # the empatica GSR signal its sample frequency (Hz)
 
-FS = 4
 
-
-# The GSR signal itself (artefacts)
+# The GSR signal itself (artifacts)
+# --------------------------- The GSR processing functions ---------------------------
 if True:
-
-    def low_pass_filter(
-        s: pd.Series,
-        order: int = 5,
-        f_cutoff: int = 1,
-        fs: int | float | None = None,
-        output_name="filter",
-        contains_nans=False,
-    ) -> pd.Series:
-        if fs is None:  # determine the sample frequency
-            fs = 1 / pd.Timedelta(pd.infer_freq(s.index)).total_seconds()
-        b, a = signal.butter(
-            N=order, Wn=f_cutoff / (0.5 * fs), btype="lowpass", output="ba", fs=FS
-        )
-        if not contains_nans:
-            assert not s.isna().any(), f"{s.name} should not contain any NaN values"
-        else:
-            s = s.dropna()
-
-        # the filtered output has the same shape as sig.values
-        return pd.Series(
-            index=s.index, data=signal.filtfilt(b=b, a=a, x=s.values).astype(np.float32)
-        ).rename(output_name)
-
-    def nan_padded_low_pass_filter(
-        s: pd.Series,
-        order: int = 5,
-        f_cutoff: int = 1,
-        fs: int | float | None = None,
-        nan_pad_size_s=None,
-        output_name="filter",
-    ) -> pd.Series:
-        if fs is None:  # determine the sample frequency
-            fs = 1 / pd.Timedelta(pd.infer_freq(s.index)).total_seconds()
-
-        # we will perform an or_convolution with a nan padded signal
-        nan_mask = s.isna()
-        expanded_nan_mask = (
-            np.convolve(
-                nan_mask, np.ones(int(2 * nan_pad_size_s * fs + 1)), mode="same"
-            )
-            > 0
-        )
-        b, a = signal.butter(
-            N=order, Wn=f_cutoff / (0.5 * fs), btype="lowpass", output="ba", fs=FS
-        )
-        # the filtered output has the same shape as sig.values
-        filt_data = signal.filtfilt(b=b, a=a, x=s[~nan_mask].values).astype(np.float32)
-        s_ = pd.Series(index=s.index, dtype=np.float32)
-        s_[~nan_mask] = filt_data
-        s_[expanded_nan_mask] = None
-        return s_.rename(output_name)
-
-    def high_pass_filter(
-        s: pd.Series,
-        order: int = 5,
-        f_cutoff: int = 1,
-        fs: int | float | None = None,
-        output_name="filter",
-    ) -> pd.Series:
-        if fs is None:  # determine the sample frequency
-            fs = 1 / pd.Timedelta(pd.infer_freq(s.index)).total_seconds()
-        b, a = signal.butter(
-            N=order, Wn=f_cutoff / (0.5 * fs), btype="highpass", output="ba", fs=FS
-        )
-        # the filtered output has the same shape as sig.values
-        # s = s.dropna()
-        return pd.Series(
-            index=s.index, data=signal.filtfilt(b=b, a=a, x=s.values).astype(np.float32)
-        ).rename(output_name)
 
     def lost_sqi(
         eda_series: pd.Series,
@@ -132,7 +76,7 @@ if True:
             (delta >= decrease_threshold)
             | (delta >= 2 * decrease_threshold) & (noise_series <= noise_threshold / 2)
         )
-        # we will more severly focus on decrease masks
+        # we will more severely focus on decrease masks
         decrease_mask = (
             valid_decrease.rolling(6 * fs - 1).min().shift(-(3 * fs + 1)).astype(bool)
         )
@@ -157,44 +101,6 @@ if True:
         s: pd.Series, s_filtered: pd.Series, output_name: str, precision=0.03
     ):
         return ((s - s_filtered) / (s_filtered + precision)).rename(output_name)
-
-    def threshold_sqi(s: pd.Series, output_name, max_thresh=None, min_thresh=None):
-        sqi = pd.Series(index=s.index, data=True)
-        if max_thresh is not None:
-            sqi &= s <= max_thresh
-        if min_thresh is not None:
-            sqi &= s >= min_thresh
-        return sqi.rename(output_name)
-
-    def sqi_and(*series, output_name: str = "EDA_SQI"):
-        sqi = None
-        for s in series:
-            if sqi is None:
-                sqi = s.rename(output_name)
-                continue
-            if len(sqi) == len(s):
-                sqi &= s
-            else:
-                raise ValueError
-                # sqi = pd.merge_asof(
-                #     sqi, s, left_index=True, right_index=True, direction="nearest"
-                # )[output_name]
-
-        return sqi
-
-    def sqi_smoothen(
-        sqi: pd.Series,
-        fs,
-        window_s=5,
-        min_ok_ratio=0.75,
-        center=True,
-        output_name="EDA_SQI_smoothend",
-    ):
-        # todo -> duplication of method abouve
-        w_size = window_s * fs
-        w_size += 1 if w_size % 2 == 0 and center else 0
-        ok_sum = sqi.rolling(w_size, center=center).sum()
-        return (sqi & ((ok_sum / w_size) >= min_ok_ratio)).rename(output_name)
 
     def interpolate_sqi(
         eda: pd.Series, valid: pd.Series, fs, output_name, max_interpolate_s=30
@@ -290,22 +196,21 @@ if True:
         assert min_recovery_time_s < max_recovery_time_s
 
         s_scr: pd.Series = df_scr["SCR_Peaks_scipy"].copy()  # not that loosely coupled
-        # op zich zou dit vervangen kunnen worden door generieke thresholding functies
+
         s_scr.loc[df_scr["SCR_RiseTime"] < min_rise_time_s] = 0
         s_scr.loc[df_scr["SCR_RiseTime"] > max_rise_time_s] = 0
 
         s_scr.loc[df_scr["SCR_RecoveryTime"] < min_recovery_time_s] = 0
         s_scr.loc[df_scr["SCR_RecoveryTime"] > max_recovery_time_s] = 0
 
-        # additional acc & amplitude related processing (compared to vic's processing)
+        # additional acc & amplitude related processing
         s_scr.loc[df_scr["SCR_Amplitude"] < min_scr_amplitude] = 0
-
         s_scr.loc[df_scr["phasic_noise_ratio"] < min_phasic_noise_ratio] = 0
 
         return s_scr[s_scr != 0].rename(s_scr.name + "_reduced").to_frame()
 
 
-# -------------------------- The processing pipelines
+# -------------------------- The processing pipelines ---------------------------------
 gsr_processing_pipeline = SeriesPipeline(
     processors=[
         # EDA - filtering & slope SQI
@@ -322,7 +227,7 @@ gsr_processing_pipeline = SeriesPipeline(
         ),
         #
         # EDA - noise processing
-        # First the normalized noise is calcualted after which the rolling abs-mean
+        # First the normalized noise is calculated after which the rolling abs-mean
         # is taken
         SeriesProcessor(
             normalized_noise, tuple(["EDA", "EDA_lf_1Hz"]), output_name="noise"
@@ -416,7 +321,7 @@ scr_processing_pipeline = SeriesPipeline(
             nan_pad_size_s=1,
             output_name="EDA_lf_cleaned_tonic_lf",
         ),
-        # Decompose into a tonic and phasic component & find peakds
+        # Decompose into a tonic and phasic component & find peaks
         SeriesProcessor(
             phasic,
             tuple(["EDA_lf_cleaned", "EDA_lf_cleaned_tonic_lf", "noise_mean_2s"]),
@@ -434,7 +339,6 @@ scr_processing_pipeline = SeriesPipeline(
         SeriesProcessor(
             lambda noise_rms, eda_tonic, eda_phasic, eda_phasic_tonic: (
                 (
-                    # TODO -> this is not true
                     # note, we do not want to center the meen, we want to
                     # calculate this on the prior values
                     (eda_phasic - eda_phasic_tonic)
@@ -453,21 +357,7 @@ scr_processing_pipeline = SeriesPipeline(
                 ]
             ),
         ),
-        # SeriesProcessor(
-        #     lambda eda_phasic, eda_phasic_tonic: (
-        #         # TODO -> this is not true
-        #         # note, we do not want to center the meen, we want to
-        #         # calculate this on the prior values
-        #         (eda_phasic - eda_phasic_tonic).fillna(0)
-        #     ).rename("EDA_Phasic_hf"),
-        #     series_names=tuple(
-        #         [
-        #             "EDA_Phasic",
-        #             "EDA_Phasic_tonic",
-        #         ]
-        #     ),
-        # ),
-        # TODO -> denoise EDA phasic in another processing step
+        # Find the peaks
         SeriesProcessor(
             find_peaks_scipy,
             "EDA_Phasic",
@@ -477,7 +367,7 @@ scr_processing_pipeline = SeriesPipeline(
             prominence=0.02,
             wlen=FS * 60,
         ),
-        # # # Filter the peaks
+        # Filter the peaks
         SeriesProcessor(
             remove_false_positives,
             tuple(
@@ -497,6 +387,7 @@ scr_processing_pipeline = SeriesPipeline(
             min_scr_amplitude=0.03,
             min_phasic_noise_ratio=7.5,
         ),
+        # Derive the skin conductance response rate (SCRR)
         # SeriesProcessor(
         #     lambda x: x.rolling("1min").count().rename('SCRR'),
         #     tuple(["EDA", "SCR_Peaks_scipy_reduced"])
