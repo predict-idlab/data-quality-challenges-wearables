@@ -7,12 +7,31 @@ Codebase & further details for the paper:
 
 **preprint**: `TODO` - see [cite](#cite) for bibtex.
 
-Specifically, two datasets are used to demonstrate countermeasures for data quality challenges in remote wearable monitoring.
-- [ETRI lifelog 2020](https://nanum.etri.re.kr/share/schung/ETRILifelogDataset2020?lang=En_us)
-- [mBrain21](TODO)
-For each challenge (abbreviated as `C<ID>`), we provide a notebook that demonstrates certain countermeasures.
+In this project, we address data quality challenges encountered in remote wearable monitoring by utilizing two distinct datasets:
 
-## 📰 How is the repository structured?
+1. ETRI Lifelog 2020: Accessible at ETRI Lifelog 2020<br> https://nanum.etri.re.kr/share/schung/ETRILifelogDataset2020?lang=En_us
+
+2. mBrain21: [Link Pending]
+
+For each identified challenge, denoted as `C<ID>`, we have curated a dedicated notebook. These notebooks are specifically designed to demonstrate effective countermeasures against the respective challenges.
+
+## 📖 Table of contents
+- [📰 How is the repository structured?](#📰-how-is-the-repository-structured)
+  - [🛠️ Installation](#🛠️️-installation)
+- [🗃️ How to acquire the data](#️🗃️-how-to-acquire-the-data)
+  - [ETRI lifelog 2020](#etri-lifelog-2020)
+  - [mBrain21](#mbrain21)
+  - [Utilizing this repository](#utilizing-this-repository)
+- [✨ Challenges & features](#✨-challenges--features)
+  - [📷 Dashboards](#📷-dashboards)
+    - [ETRI](#etri)
+    - [mBrain](#mbrain)
+  - [⌚ off-wrist detection](#⌚-off-wrist-detection)
+  - [✍️ Data annotation](#✍️️-data-annotation)
+- [📖 Citation](#📖-citation)
+- [📝 License](#📝-license)
+
+## 📰 How is the repository structured
 
 ```txt
 ├── code_utils       <- module containing all shared code
@@ -37,12 +56,12 @@ You can install the dependencies in your Python environment by executing the fol
 2. Activate you poetry environment by calling `poetry shell`
 3. Install the dependencies by calling `poetry install`
 
-## 🗃️ How to acquire the data? 
+## 🗃️ How to acquire the data
 ### ETRI lifelog 2020
 The ETRI lifelog 2020 is made available at https://nanum.etri.re.kr/share/schung/ETRILifelogDataset2020?lang=En_us.
+
 In order to download the dataset, you should first create an account on the ETRI Nanum website.
 Afterwards, fill in the license agreement form, and upon approval, you will be able to download the dataset via the web platform.
-
 
 ### mBrain21
 `TODO`<br>
@@ -54,12 +73,10 @@ kaggle datasets download -d jonasvdd/mbrain21
 ```
 
 ### Utilizing this repository
-
-Make sure that you've extended the [path_conf.py](agg_utils/path_conf.py) file's hostname if statement with your machine's hostname and that you've configured the path to the `mBrain` and `ETRI` datasets.
+Make sure that you've extended the [path_conf.py](code_utils/path_conf.py) file's hostname *if- statement* with your machine's hostname and that you've configured the paths to the `mBrain` and `ETRI` datasets.
 
 # ✨ Challenges & features
 Below, a subset of exemplified challenges and features are listed.
-
 
 ## 📷 Dashboards
 This section elaborates on the longitudinal time series visualization dashboards for both the ETRI and mBrain datasets.
@@ -105,6 +122,7 @@ Below, we provide a screenshot of the mBrain dashboard. As can be observed from 
 The wearable non-wear detection is demonstrated in the [C5.1_off_wrist_detection](notebooks/mBrain/C5_wearable_off_wrist.ipynb) notebook.<br><br>
 Moreover, the [C7_missing_data](notebooks/mBrain/C7_missing_data.ipynb) notebook demonstrates how this off-wrist pipeline can be used to remove non-wear bouts as a preprocessing step.
 
+Below, a screenshot of the off-wrist pipeline devised by [Böttcher et al. (2022)](https://www.nature.com/articles/s41598-022-25949-x) is shown.
 ![](figures/off_wrist_bottcher.png)
 
 ## ✍️ Data annotation
