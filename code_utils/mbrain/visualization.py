@@ -159,6 +159,7 @@ def add_headache_timeline_to_fig(
         for c in ["time", "endTime"]:
             df_headache[c] = df_headache[c].dt.tz_convert("Europe/Brussels")
         df_headache = df_headache[df_headache.deprecated != True]
+        df_headache = df_headache.dropna(subset=['location'], how='any')
     if df_medicine is None:
         df_medicine = EventDumpParser.parse_medicine_events(df_eventdump)
 

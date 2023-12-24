@@ -29,10 +29,6 @@ from code_utils.utils.dash_utils import serve_layout, get_selector_states, _crea
 # isort: on
 # fmt: on
 
-df_h = pd.read_parquet(
-    loc_data_dir / "df_headache_relevant.parquet", engine="fastparquet"
-)
-
 # Create the Dash app
 app = DashProxy(
     __name__,
@@ -95,9 +91,9 @@ def plot_multi_sensors(
     if "show timeline" in selected_items:
         # TODO: also filter on the date range
         patient_id = fold_usr_subf_start_end_sensor_list[0][1].split(".")[0]
-        # df_eventdump = pd.read_csv(mbrain_metadata_path / patient_id / "event_dump.csv")
-        df_h_u = df_h[df_h["user"] == patient_id]
-        add_headache_timeline_to_fig(fig, row_idx, df_headache=df_h_u)
+        df_eventdump = pd.read_csv(mbrain_metadata_path / patient_id / "event_dump.csv")
+        # df_h_u = df_h[df_h["user"] == patient_id]
+        add_headache_timeline_to_fig(fig, row_idx, df_eventdump=df_eventdump)
         row_idx += 1
 
     # 1. Visualize the sensor data

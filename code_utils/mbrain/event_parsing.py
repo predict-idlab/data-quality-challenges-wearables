@@ -100,7 +100,6 @@ class EventDumpParser:
             df_headache[
                 (df_headache.deprecated != True)
                 & df_headache.intensity.notna()
-                & ~df_headache.duplicated(subset="_id.$oid")
             ]
             .reset_index(drop=True)
             .copy()
