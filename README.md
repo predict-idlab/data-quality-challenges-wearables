@@ -16,20 +16,21 @@ In this project, we address data quality challenges encountered in remote wearab
 For each identified challenge, denoted as `C<ID>`, we have curated a dedicated notebook. These notebooks are specifically designed to demonstrate effective countermeasures against the respective challenges.
 
 ## 📖 Table of contents
-- [📰 How is the repository structured?](#📰-how-is-the-repository-structured)
-  - [🛠️ Installation](#🛠️️-installation)
-- [🗃️ How to acquire the data](#️🗃️-how-to-acquire-the-data)
+- [📰 How is the repository structured?](#-how-is-the-repository-structured)
+  - [🛠️ Installation](#-installation)
+- [🗃️ How to acquire the data](#️-how-to-acquire-the-data)
   - [ETRI lifelog 2020](#etri-lifelog-2020)
   - [mBrain21](#mbrain21)
   - [Utilizing this repository](#utilizing-this-repository)
-- [✨ Challenges & features](#✨-challenges--features)
-  - [📷 Dashboards](#📷-dashboards)
+- [✨ Challenges & features](#-challenges--features)
+  - [📷 Dashboards](#-dashboards)
     - [ETRI](#etri)
     - [mBrain](#mbrain)
-  - [⌚ off-wrist detection](#⌚-off-wrist-detection)
-  - [✍️ Data annotation](#✍️️-data-annotation)
-- [📖 Citation](#📖-citation)
-- [📝 License](#📝-license)
+  - [⌚ off-wrist detection](#-off-wrist-detection)
+  - [✒️ Data annotation](#-data-annotation)
+- [📖 Citation](#citation_ref)
+- [📝 License](#license_ref)
+
 
 ## 📰 How is the repository structured
 
@@ -125,12 +126,13 @@ Moreover, the [C7_missing_data](notebooks/mBrain/C7_missing_data.ipynb) notebook
 Below, a screenshot of the off-wrist pipeline devised by [Böttcher et al. (2022)](https://www.nature.com/articles/s41598-022-25949-x) is shown.
 ![](figures/off_wrist_bottcher.png)
 
-## ✍️ Data annotation
+## ✒️ Data annotation
 The [C5.1_label_off_wrist](notebooks/mBrain/C5.1_Label_off_wrist.ipynb) mBrain notebook demonstrates how large bouts of time-series data can be annotated using [plotly-resampler](https://github.com/predict-idlab/plotly-resampler).
 
 Below a demo is shown on how this annotation tool can be used to label `off-wrist` periods.
 ![](figures/annotation_demo.gif)
 
+<a name="citation_ref"></a>
 ## 📖 Citation
 ```bibtex
 @article{TODO,
@@ -140,7 +142,7 @@ Below a demo is shown on how this annotation tool can be used to label `off-wris
   year={2023},
 }
 ```
-
+<a name="license_ref"></a>
 ## 📝 License
 The code is available under the *imec* [license](LICENSE).
 
