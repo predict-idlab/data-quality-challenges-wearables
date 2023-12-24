@@ -5,7 +5,7 @@
 Codebase & further details for the paper:
 > Addressing Data Quality Challenges in Observational Ambulatory Studies: Analysis, methodologies and practical solutions for wrist-worn wearable monitoring
 
-**preprint**: `TODO` - see [cite](#cite) for bibtex.
+**preprint**: `TODO` - see [Citation](#citation_ref) for bibtex.
 
 In this project, we address data quality challenges encountered in remote wearable monitoring by utilizing two distinct datasets:
 
