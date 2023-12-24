@@ -4,7 +4,7 @@ from socket import gethostname
 
 if gethostname() == "gecko":
     # -------------- ETRI PATHS --------------
-    _etri_root_dir = Path("/media/etri/")
+    _etri_root_dir = Path("/data/etri/")
     # The path which contains raw etri .7z files, combined with the metadata
     etri_path = _etri_root_dir / "raw"
 
@@ -15,7 +15,7 @@ if gethostname() == "gecko":
     processed_etri_path = _etri_root_dir / "processed"
 
     # --------------- MBRAIN PATHS ---------------
-    _mbrain_root_dir = Path("/media/aaa_contextaware/raw/mbrain")
+    _mbrain_root_dir = Path("/media/data_quality_challenges/mbrain21")
 
     # The path which contains the metadata for the mbrain data
     mbrain_metadata_path = _mbrain_root_dir / "metadata"
@@ -24,9 +24,10 @@ if gethostname() == "gecko":
     processed_mbrain_path = _mbrain_root_dir / "obelisk_dump"
 
 else:
-    raise NotImplementedError()
+    raise NotImplementedError('Please add the data paths in code_utils/path_conf.py')
 
 loc_data_dir = Path(getsourcefile(lambda: 0)).parent.parent.absolute() / "loc_data"
+figure_dir = loc_data_dir.parent / "figures"
 
 assert etri_path.exists()
 assert interim_etri_path.exists()
