@@ -5,13 +5,13 @@
 Codebase & further details for the paper:
 > Addressing Data Quality Challenges in Observational Ambulatory Studies: Analysis, methodologies and practical solutions for wrist-worn wearable monitoring
 
-**preprint**: `TODO` - see [cite](#cite) for bibtex.
+---
 
 In this project, we address data quality challenges encountered in remote wearable monitoring by utilizing two distinct datasets:
 
 1. ETRI Lifelog 2020: Accessible at ETRI Lifelog 2020<br> https://nanum.etri.re.kr/share/schung/ETRILifelogDataset2020?lang=En_us
 
-2. mBrain21: https://www.kaggle.com/datasets/jonvdrdo/mbrain21/data
+2. mBrain21:<br> https://www.kaggle.com/datasets/jonvdrdo/mbrain21/data
 
 For each identified challenge, denoted as `C<ID>`, we have curated a dedicated notebook. These notebooks are specifically designed to demonstrate effective countermeasures against the respective challenges.
 
