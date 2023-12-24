@@ -1,3 +1,4 @@
+import ast
 import os
 import textwrap
 from pathlib import Path
@@ -7,6 +8,7 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from functional import seq
 from plotly.subplots import make_subplots
 from plotly_resampler import FigureResampler
 
@@ -31,19 +33,19 @@ def construct_headache_event_hovertext(r: pd.Series) -> str:
         hours_e = int(abs(td_e.total_seconds()) // 3600)
         minutes_e = int((abs(td_e.total_seconds()) - 3600 * hours_e) // 60)
         edit_time_str = (
-            "<br><b>tijdsverschil</b> t.o.v. einde: "
+            "<br><b>time difference</b> w.r.t. H end: "
             + ("-" if td_e.total_seconds() < 0 else "")
             + f"{hours_e}:{minutes_e}"
         )
 
     created_on_str = (
         (
-            f"<b>aangemaakt</b>: {r.created_on.strftime('%d/%m %H:%M')} "
+            f"<b>Created on</b>: {r.created_on.strftime('%d/%m %H:%M')} "
             if "created_on" in r and pd.notna(r.created_on)
             else ""
         )
         + (
-            f"- laatst bewerkt: {last_edited_time.strftime('%d/%m %H:%M')}"
+            f"- last edited: {last_edited_time.strftime('%d/%m %H:%M')}"
             if "created_on" in r
             and pd.notna(last_edited_time)
             and last_edited_time > r.created_on
@@ -52,33 +54,46 @@ def construct_headache_event_hovertext(r: pd.Series) -> str:
         + edit_time_str
     )
     time_intensity_str = (
-        f"<b>Periode</b>: {r.time.strftime('%H:%M')} - "
-        f"{r.endTime.strftime('%H:%M')}" + f" - <b>duur</b>: {hours}h{minutes}min "
-        "- <b>intensiteit</b>: "
+        f"<b>Interval</b>: {r.time.strftime('%H:%M')} - "
+        f"{r.endTime.strftime('%H:%M')}" + f" - <b>Duration</b>: {hours}h{minutes}min "
+        "- <b>Intensity</b>: "
         + str(r.intensity_str if "instensity_str" in r else r.intensity)
     )
     medication_str = (
-        f"<b>Nam medicatie</b>: {str(r.tookMedication)}  -  "
-        + f"<b>medicatie werkte</b>: {str(r.medicationWorked)}"
+        f"<b>Took medication</b>: {str(r.tookMedication)}  -  "
+        + f"<b>medication working</b>: {str(r.medicationWorked)}"
     )
 
-    if isinstance(r.location, str):
-        loc_str = "<b>Locatie</b>:<br>   " + "<br>   ".join(
-            textwrap.wrap(r.location)
+    location_list = ast.literal_eval(r.location)
+    if isinstance(location_list, list):
+        loc_str = "<b>Location</b>:<br>   " + "<br>   ".join(
+            textwrap.wrap(", ".join(sorted([k["name_en"] for k in location_list])))
         )  # + "<br>"
     else:
         loc_str = "<b>   no location</b>"
 
-    if isinstance(r.symptoms, str):
-        symp_str = "<b>Symptomen</b>:<br>   " + "<br>   ".join(
-            textwrap.wrap(r.symptoms, width=80)
+    def parse_symp_trgr_list(st_list, checked: bool = True):
+        return ", ".join(
+            sorted(
+                seq(st_list)
+                .filter(lambda y: y.get("isChecked") == checked)
+                .map(lambda y: y.get("name_en"))
+                .to_list()
+            )
+        )
+
+    symp_list = ast.literal_eval(r.symptoms)
+    if isinstance(symp_list, list):
+        symp_str = "<b>Symptoms</b>:<br>   " + "<br>   ".join(
+            textwrap.wrap(parse_symp_trgr_list(symp_list), width=80)
         )  # + "<br>"
     else:
         symp_str = "<b>   no symptoms<b>"
 
-    if isinstance(r.triggers, str):
+    trgr_list = ast.literal_eval(r.triggers)
+    if isinstance(trgr_list, list):
         trigger_str = "<b>Triggers</b>:<br>   " + "<br>   ".join(
-            textwrap.wrap(r.triggers)
+            textwrap.wrap(parse_symp_trgr_list(trgr_list), width=80)
         )  # + "<br>"
     else:
         trigger_str = "<b>no triggers</b>"
@@ -93,29 +108,6 @@ def construct_headache_event_hovertext(r: pd.Series) -> str:
             symp_str,
         ]
     )
-
-
-def figs_to_html(
-    figs: List[go.Figure],
-    html_path: Union[Path, str],
-    append=False,
-    include_plotlyjs=True,
-):
-    """Save a list of figures in a single HTML file.
-
-    :param figs: A list of plotly figures
-    :param html_path: the HTML path where the figure will be saved
-    :param append:
-    """
-    if not isinstance(html_path, Path):
-        html_path = Path(html_path)
-
-    if not html_path.parent.exists():
-        os.makedirs(html_path.parent)
-
-    with open(html_path, "a" if append else "w") as f:
-        for fig in figs:
-            f.write(fig.to_html(full_html=False, include_plotlyjs=include_plotlyjs))
 
 
 def fast_scatter(df, subplots=False, mode="lines", **init_kwargs) -> FigureResampler:

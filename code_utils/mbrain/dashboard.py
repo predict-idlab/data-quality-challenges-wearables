@@ -29,7 +29,9 @@ from code_utils.utils.dash_utils import serve_layout, get_selector_states, _crea
 # isort: on
 # fmt: on
 
-df_h = pd.read_parquet(loc_data_dir / 'df_headache_relevant.parquet', engine='fastparquet')
+df_h = pd.read_parquet(
+    loc_data_dir / "df_headache_relevant.parquet", engine="fastparquet"
+)
 
 # Create the Dash app
 app = DashProxy(
