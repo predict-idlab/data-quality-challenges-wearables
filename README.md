@@ -5,8 +5,6 @@
 Codebase & further details for the paper:
 > Addressing Data Quality Challenges in Observational Ambulatory Studies: Analysis, methodologies and practical solutions for wrist-worn wearable monitoring
 
----
-
 In this project, we address data quality challenges encountered in remote wearable monitoring by utilizing two distinct datasets:
 
 1. ETRI Lifelog 2020: Accessible at ETRI Lifelog 2020<br> https://nanum.etri.re.kr/share/schung/ETRILifelogDataset2020?lang=En_us
@@ -82,8 +80,8 @@ Below, a subset of exemplified challenges and features are listed.
 This section elaborates on the longitudinal time series visualization dashboards for both the ETRI and mBrain datasets.
 
 Each dashboard contains, as can be observed in the figures below, a left column with selection boxes.
-The General flow to visualize a specific time series is as follows:
-- Select a `folder` (in our case, al data from the ETRI and MBRAIN dataset resides within a single folder, so you can only select from one option)
+The General flow to visualize a specific time series excerpt is as follows:
+- Select a `folder` (in our case, all data from the ETRI and MBRAIN dataset are stored in the same folder - so you can only select from one option)
 - Select an user (e.g, user30 for the ETRI dataset)
 > *note*: After selection a folder and user, the time-span selection will be updated to the available time-span for the selected user-folder combination
 - Select sensors (e.g. 'E4 accelerometer' and 'E4 temperature')
@@ -92,7 +90,7 @@ Finally, to visualize, press the *run interact* button.
 
 
 ### ETRI
-Once the ETRI dataset has been downloaded and parsed via the [ETRI parsing](notebooks/etri/0_parse_etri.ipynb) notebook, the corresponding [dashboard script](code_utils/etri/dashboard.py)
+Once the ETRI dataset has been downloaded and parsed via the [ETRI parsing](notebooks/etri/0_parse_etri.ipynb) notebook, the corresponding [dashboard script](code_utils/etri/dashboard.py) can be used to explore & analyse the data.
 The dashboard can be run via the following command (after activating the poetry shell)
 
 ```bash
@@ -102,7 +100,7 @@ The output should show the following:
 > *Dash is running on http://0.0.0.0:\<PORT\>*
 
 
-In the dashboard screenshot below, both the wearable data and the application event labels are visualized. One can immediately observe that this participant tends to be more alone during evenings (light blue shaded area of the lower row in the upper subplot). During the weekends (indicated via a gray shaded area), this participant tends to be alone and spend a lot of time at home.
+In the dashboard screenshot below, both the wearable data and the application event labels are visualized. One can immediately observe that this participant tends to be more alone during evenings (light blue shaded area of the lower row in the upper subplot). During the weekends (indicated with a gray shaded area), this participant tends to be alone and spend a lot of time at home.
 
 ![](figures/ETRI_dashboard.png)
 
