@@ -64,13 +64,13 @@ def construct_headache_event_hovertext(r: pd.Series) -> str:
         + f"<b>medication working</b>: {str(r.medicationWorked)}"
     )
 
-    location_list = ast.literal_eval(r.location)
-    if isinstance(location_list, list):
-        loc_str = "<b>Location</b>:<br>   " + "<br>   ".join(
-            textwrap.wrap(", ".join(sorted([k["name_en"] for k in location_list])))
-        )  # + "<br>"
-    else:
-        loc_str = "<b>   no location</b>"
+    # location_list = ast.literal_eval(r.location)
+    # if isinstance(location_list, list):
+    #     loc_str = "<b>Location</b>:<br>   " + "<br>   ".join(
+    #         textwrap.wrap(", ".join(sorted([k["name_en"] for k in location_list])))
+    #     )  # + "<br>"
+    # else:
+    loc_str = "<b>   no location</b>"
 
     def parse_symp_trgr_list(st_list, checked: bool = True):
         return ", ".join(
@@ -159,7 +159,8 @@ def add_headache_timeline_to_fig(
         for c in ["time", "endTime"]:
             df_headache[c] = df_headache[c].dt.tz_convert("Europe/Brussels")
         df_headache = df_headache[df_headache.deprecated != True]
-        df_headache = df_headache.dropna(subset=['location'], how='any')
+        print(df_headache.columns)
+        df_headache = df_headache.dropna(subset=['tookMedication'], how='any')
     if df_medicine is None:
         df_medicine = EventDumpParser.parse_medicine_events(df_eventdump)
 

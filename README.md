@@ -134,11 +134,11 @@ Below a demo is shown on how this annotation tool can be used to label `off-wris
 <a name="citation_ref"></a>
 ## 📖 Citation
 ```bibtex
-@article{TODO,
-  title={TODO},
-  author={Van Der Donckt, Jonas and TODO},
-  journal={arXiv preprint arXiv:TODO},
-  year={2023},
+@article{van2024addressing,
+  title={Addressing Data Quality Challenges in Observational Ambulatory Studies: Analysis, Methodologies and Practical Solutions for Wrist-worn Wearable Monitoring},
+  author={Van Der Donckt, Jonas and Vandenbussche, Nicolas and Van Der Donckt, Jeroen and Chen, Stephanie and Stojchevska, Marija and De Brouwer, Mathias and Steenwinckel, Bram and Paemeleire, Koen and Ongenae, Femke and Van Hoecke, Sofie},
+  journal={arXiv preprint arXiv:2401.13518},
+  year={2024}
 }
 ```
 <a name="license_ref"></a>
