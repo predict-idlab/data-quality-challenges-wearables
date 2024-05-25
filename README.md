@@ -33,13 +33,14 @@ For each identified challenge, denoted as `C<ID>`, we have curated a dedicated n
 ## 📰 How is the repository structured
 
 ```txt
-├── code_utils       <- module containing all shared code
-│   ├── empatica     <- Empatica E4 specific code (signal processing pipelines)
-│   ├── etri         <- ETRI specific code (data parsing, visualization, dashboard)
-│   ├── mbrain       <- mBrain specific code (data parsing, visualization, dashboard)
-│   └── utils        <- utility code (dashboard, dataframes, interaction analysis)
-├── loc_data         <- local data folder in which intermediate data is stored
-└── notebooks        <- Etri and mBrain specific notebooks 
+├── code_utils              <- module containing all shared code
+│   ├── empatica            <- Empatica E4 specific code (signal processing pipelines)
+│   ├── etri                <- ETRI specific code (data parsing, visualization, dashboard)
+│   ├── mbrain              <- mBrain specific code (data parsing, visualization, dashboard)
+│   └── utils               <- utility code (dashboard, dataframes, interaction analysis)
+├── loc_data                <- local data folder in which intermediate data is stored
+└── notebooks               <- Etri and mBrain specific notebooks 
+    ├── EmbracePlus.ipynb   <- EmbracePlus demo notebook
     ├── etri
     └── mBrain
 ```
