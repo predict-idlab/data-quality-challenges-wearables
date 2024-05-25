@@ -8,7 +8,12 @@ The second pipeline is a revised iteration of the first pipeline
 
 from tsflex.processing import SeriesPipeline, SeriesProcessor, dataframe_func
 
-from code_utils.empatica.generic_processing import mean_resample, sqi_or, sqi_smoothen, std_sum
+from code_utils.empatica.generic_processing import (
+    mean_resample,
+    sqi_or,
+    sqi_smoothen,
+    std_sum,
+)
 
 # fmt: off
 # ----------------------------------------
