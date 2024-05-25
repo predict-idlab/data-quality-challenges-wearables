@@ -6,17 +6,21 @@ import pandas as pd
 
 
 class AvroParser:
+    """A static class to parse Embrace+ avro files."""
+
+    # constants
     TS_COL = "timestampStart"
     FS_COL = "samplingFrequency"
     VAL_COL = "values"
 
+    # ------------------------------- Helper functions ------------------------------
     @staticmethod
     def _get_timestamps(signal_dict, val_col="values") -> pd.Series:
-        # TODO -> currently i'm not sure whether the current
+        # TODO -> I'm not sure whether the current timestamps are timezones aware
         start_time = pd.to_datetime(signal_dict[AvroParser.TS_COL] * 1000, unit="ns")
         return pd.date_range(
             start_time,
-            # end=start_time
+            # end=start_time  # alternative way to calculate the end time
             # + pd.to_timedelta(
             #     1000 * len(signal_dict[val_col]) / signal_dict[AvroParser.FS_COL],
             #     unit="ms",
@@ -42,6 +46,7 @@ class AvroParser:
             }
         )
 
+        # Edge case: if the IMU data is empty -> return an empty dataframe
         if df_imu.empty:
             df_imu["timestamp"] = pd.Series([], dtype="datetime64[ns]")
             return df_imu
@@ -64,7 +69,9 @@ class AvroParser:
         )
         return df
 
+    # ------------------------------ Main functions ---------------------------------
     def parse_record(record_dict) -> dict:
+        """Parse a single record of an Embrace+ avro file."""
         data = record_dict["rawData"]
         return {
             "acc": AvroParser._parse_imu_record(data["accelerometer"], prefix="ACC"),
@@ -80,6 +87,19 @@ class AvroParser:
 
     @staticmethod
     def parse_avro_file(file_path: Union[str, Path]) -> List[dict]:
+        """Parse all records of an Embrace+ avro file.
+
+        Returns:
+            List[dict]: A list of dictionaries, where each dictionary represents a
+            single record. Each record contains the following keys
+            - "acc": A pandas DataFrame containing the accelerometer data
+            - "gyro": A pandas DataFrame containing the gyroscope data
+            - "eda": A pandas DataFrame containing the EDA data
+            - "bvp": A pandas DataFrame containing the BVP data
+            - "tmp": A pandas DataFrame containing the temperature data
+            - "metadata": A dictionary containing the metadata of the record
+
+        """
         with open(file_path, "rb") as f:
             records = [AvroParser.parse_record(record) for record in fastavro.reader(f)]
         for r in records:
