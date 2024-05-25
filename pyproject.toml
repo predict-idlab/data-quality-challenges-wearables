@@ -7,6 +7,7 @@ readme = "README.md"
 license = "imec"
 repository = "https://github.com/predict-idlab/ts-datapoint-selection-vis"
 documentation = "https://github.com/predict-idlab/ts-datapoint-selection-vis"
+package-mode = false
 keywords = ["wearables", "real-life", "data quality", "examples", "monitoring", "ambulator studies"]
 
 [tool.poetry.dependencies]
@@ -26,6 +27,7 @@ memory-profiler = "^0.61.0"
 line-profiler = "^4.0.3"
 scikit-learn = "^1.3.0"
 seaborn = "^0.12.2"
+fastavro = "^1.9.4"
 
 
 [tool.poetry.dev-dependencies]
