@@ -16,14 +16,14 @@ from tsflex.chunking import chunk_data
 from tsflex.processing import SeriesPipeline, SeriesProcessor, dataframe_func
 from tsflex.processing.utils import process_chunks_multithreaded
 
-from code_utils.utils.dataframes import arr_to_repetitive_count
 from code_utils.empatica.generic_processing import (
-    sqi_and,
     low_pass_filter,
-    sqi_smoothen,
     nan_padded_low_pass_filter,
+    sqi_and,
+    sqi_smoothen,
     threshold_sqi,
 )
+from code_utils.utils.dataframes import arr_to_repetitive_count
 
 # CONFIG
 FS = 4  # the empatica GSR signal its sample frequency (Hz)
